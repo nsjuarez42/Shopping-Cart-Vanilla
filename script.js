@@ -19,29 +19,12 @@ const onClickTheme = ()=>{
 sun.addEventListener("click",onClickTheme)
 moon.addEventListener("click",onClickTheme)
 
-//Create products in js
-//use this json
-/*let product_html = `<div class="">
-<img src="" alt="">
-<div class="discount"></div>
-<h3>title</h3>
-<div class="stars">
-<i class="fa-regular fa-star"></i>
-<i class="fa-regular fa-star"></i>
-<i class="fa-regular fa-star"></i>
-<i class="fa-regular fa-star"></i>
-<i class="fa-regular fa-star"></i>
-</div>
-<span>price</span>
-</div>`*/
-
-fetch('https://dummyjson.com/products')
-.then(res => res.json())
-.then(r=>{
-    let {products} = r
+const load_page = (products)=>{
     let s = document.getElementById("products")
+    s.innerHTML = ""
     i=0;
-    while(i<9){
+    //page of more than 9 elements???
+    while(i<products.length){
         console.log('value of',i,i%3==0)
         if(i%3==0){
             let html = ""
@@ -65,6 +48,52 @@ fetch('https://dummyjson.com/products')
             s.innerHTML+= `<div class="fila">${html}</div>`
         }
     }
+}
+
+
+fetch('https://dummyjson.com/products')
+.then(res => res.json())
+.then(r=>{
+    let {products} = r
+    console.log(products)
+    let p = document.getElementById("pages")
+    for(let x=0;x< Math.floor(products.length /9) ;x++){
+        pages.innerHTML+= `<span class="pagebtn" id=${x+1}>${x+1}</span>`
+    }
+    let pages_btns = document.getElementsByClassName("pagebtn")
+    let current_page = 1
+    let onclick_page =(e)=>{
+        let num = Number(e.target.outerText)
+        if(current_page != num){
+            current_page = num
+            switch(num){
+                case 1:{
+                    load_page(products.slice(0,10))
+                    break
+                }
+                case 2:{
+                    load_page(products.slice(10,20))
+                    break
+                }
+                case 3:{
+                    load_page(products.slice(20,30))
+                    break
+                }
+                
+
+            }
+        }
+        
+        console.log(e.target.outerText)
+    }
+    for(let z=0;z<pages_btns.length;z++){
+        pages_btns[z].addEventListener("click",onclick_page)
+    }
+
+    //according to page id choose position of array and load elements 
+    //current page
+    load_page(products.slice(0,10))
+   
 
 });
 
